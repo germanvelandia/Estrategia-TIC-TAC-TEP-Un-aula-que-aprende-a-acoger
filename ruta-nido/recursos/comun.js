@@ -41,6 +41,6 @@ if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = () => {};
     else { const on = root.classList.toggle(t); b.setAttribute('aria-pressed', on); store.set('rn-' + t, on ? '1' : '0'); }
   });
   const f = document.createElement('footer'); f.className = 'rfoot';
-  f.innerHTML = `<div class="wrap">Kit Ruta Nido · Equipo Tejido Diverso · Universidad El Bosque · 2026 · <a href="../index.html">Ver la presentación</a><br>Esta página no pide, no guarda ni envía datos. Pictogramas representados con emojis; en el aula se usan los de <a href="https://arasaac.org/" target="_blank" rel="noopener">ARASAAC</a>.</div>`;
+  f.innerHTML = `<div class="wrap">Kit Ruta Nido · Velandia, Morales, Rodríguez, Patiño y Neira · Recursos Educativos Digitales para la Educación Inclusiva · Universidad El Bosque · 2026 · <a href="../index.html">Ver la presentación</a><br>Esta página no pide, no guarda ni envía datos. Pictogramas representados con emojis; en el aula se usan los de <a href="https://arasaac.org/" target="_blank" rel="noopener">ARASAAC</a>.</div>`;
   document.body.append(f);
 })();

@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruta Nido · Prototipo</title>
+<meta name="description" content="Prototipo navegable de la estrategia TIC-TAC-TEP Ruta Nido: rutina común, libro de calma, pacto del nido y asamblea.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&family=Lexend:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff8ef; --bg-2:#fdeedd; --surface:#fff; --ink:#26303a; --ink-soft:#56616c;
+  --teal:#1f8a86; --teal-soft:#d6f0ee; --coral:#d9573f; --coral-soft:#fde1da;
+  --sun:#f2b632; --sun-soft:#fdf0cc; --lilac:#6f5cc7; --lilac-soft:#e8e4fa;
+  --leaf:#3f8f4b; --leaf-soft:#dcf1de; --line:#ead9c4; --focus:#1b4fd8;
+  --shadow:0 10px 30px rgba(80,50,20,.10); --radius:22px; --scale:1;
+  --font-body:"Atkinson Hyperlegible", system-ui, sans-serif; --font-head:"Fredoka", "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1a1e24; --bg-2:#222831; --surface:#2a313b; --ink:#f3ede4; --ink-soft:#c3bbb0;
+  --teal:#4cc3bd; --teal-soft:#1f3b3a; --coral:#ff8a74; --coral-soft:#4a2b26; --sun:#f5c55a; --sun-soft:#4a3d1c;
+  --lilac:#a99bf0; --lilac-soft:#352f52; --leaf:#7fcf89; --leaf-soft:#24402a; --line:#3b4450; --focus:#8fb0ff; --shadow:0 10px 30px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --bg:#1a1e24; --bg-2:#222831; --surface:#2a313b; --ink:#f3ede4; --ink-soft:#c3bbb0;
+  --teal:#4cc3bd; --teal-soft:#1f3b3a; --coral:#ff8a74; --coral-soft:#4a2b26; --sun:#f5c55a; --sun-soft:#4a3d1c;
+  --lilac:#a99bf0; --lilac-soft:#352f52; --leaf:#7fcf89; --leaf-soft:#24402a; --line:#3b4450; --focus:#8fb0ff; --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+html.hc{ --bg:#000; --bg-2:#000; --surface:#000; --ink:#fff; --ink-soft:#fff; --teal:#00ffff; --teal-soft:#000; --coral:#ffff00; --coral-soft:#000;
+  --sun:#ffff00; --sun-soft:#000; --lilac:#ff9cff; --lilac-soft:#000; --leaf:#7CFC00; --leaf-soft:#000; --line:#fff; --focus:#ffff00; --shadow:none }
+html.hc .card{border:2px solid #fff}
+html.dys{ --font-body:"Lexend", system-ui, sans-serif; --font-head:"Lexend", system-ui, sans-serif; letter-spacing:.03em; word-spacing:.12em }
+html.calm *, html.calm *::before, html.calm *::after{ animation:none !important; transition:none !important }
+@media (prefers-reduced-motion: reduce){ *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important } }
+
+*{box-sizing:border-box}
+html{font-size:calc(17px * var(--scale)); scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); line-height:1.6; overflow-x:hidden}
+h1,h2,h3{font-family:var(--font-head); line-height:1.15; margin:0 0 .5em}
+h2{font-size:clamp(1.6rem,4vw,2.3rem)} h3{font-size:1.2rem}
+p{margin:0 0 1em}
+a{color:var(--teal); font-weight:700}
+:focus-visible{outline:4px solid var(--focus); outline-offset:3px; border-radius:8px}
+.skip{position:absolute; left:-999px; top:8px; background:var(--ink); color:var(--bg); padding:.6em 1em; border-radius:10px; z-index:200}
+.skip:focus{left:12px}
+.wrap{max-width:1120px; margin:0 auto; padding:0 16px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
+.grid{display:grid; gap:18px}
+.btn{display:inline-flex; align-items:center; gap:.45em; padding:.7em 1.2em; border-radius:999px; border:2px solid transparent; font:700 .98rem var(--font-body); cursor:pointer; text-decoration:none; color:inherit; transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--teal); color:#fff} html.hc .btn-primary{color:#000}
+.btn-ghost{background:transparent; border-color:var(--ink); color:var(--ink)}
+.btn-sm{padding:.45em .9em; font-size:.9rem}
+.eyebrow{font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:.8rem; color:var(--coral)}
+.lead{font-size:1.1rem; color:var(--ink-soft); max-width:64ch}
+.note{font-size:.9rem; color:var(--ink-soft)}
+.pill{display:inline-block; padding:.2em .7em; border-radius:999px; font-size:.8rem; font-weight:700; background:var(--bg-2); border:1px solid var(--line)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.speak{border:none; background:var(--sun-soft); color:var(--ink); border-radius:999px; padding:.3em .8em; font:700 .85rem var(--font-body); cursor:pointer}
+.speak:hover{background:var(--sun)}
+
+/* header */
+header.top{position:sticky; top:0; z-index:100; background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line)}
+.bar{display:flex; align-items:center; justify-content:space-between; gap:12px; height:64px}
+.brand{display:flex; gap:.55em; align-items:center; font:700 1.1rem var(--font-head); color:var(--ink); text-decoration:none}
+.nest{width:30px; height:30px; border-radius:50%; background:conic-gradient(var(--teal) 0 25%, var(--sun) 0 50%, var(--coral) 0 75%, var(--lilac) 0)}
+.back{font-size:.9rem}
+
+/* route stepper */
+.hero{padding:44px 0 28px}
+.route{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:22px}
+@media (max-width:820px){ .route{grid-template-columns:1fr 1fr} }
+@media (max-width:420px){ .route{grid-template-columns:1fr} }
+.route button{all:unset; box-sizing:border-box; cursor:pointer; border-radius:18px; padding:14px; border:2px solid var(--line); background:var(--surface); display:flex; flex-direction:column; gap:4px; min-height:112px; position:relative}
+.route button:focus-visible{outline:4px solid var(--focus)}
+.route button .k{font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em}
+.route button .t{font:700 1.05rem var(--font-head)}
+.route button .s{font-size:.85rem; color:var(--ink-soft)}
+.route button .e{font-size:1.6rem}
+.route button[aria-selected="true"]{border-width:3px; transform:translateY(-3px); box-shadow:var(--shadow)}
+.route .m0{border-color:var(--line)} .route .m0[aria-selected="true"]{border-color:var(--ink)}
+.route .m1[aria-selected="true"]{border-color:var(--teal); background:var(--teal-soft)}
+.route .m2[aria-selected="true"]{border-color:var(--lilac); background:var(--lilac-soft)}
+.route .m3[aria-selected="true"]{border-color:var(--sun); background:var(--sun-soft)}
+.route .m4[aria-selected="true"]{border-color:var(--leaf); background:var(--leaf-soft)}
+.route .k.c1{color:var(--teal)} .route .k.c2{color:var(--lilac)} .route .k.c3{color:#9a6a00} .route .k.c4{color:var(--leaf)}
+html.hc .route .k{color:var(--ink) !important}
+.dua{margin-top:10px; padding:10px 16px; border-radius:14px; border:2px dashed var(--line); font-size:.9rem; color:var(--ink-soft); text-align:center}
+
+/* panels */
+.panel[hidden]{display:none}
+.panel{padding:26px 0 90px; animation:pop .4s ease}
+@keyframes pop{from{opacity:0; transform:translateY(12px)}}
+.panel-head{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:18px}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+@media (max-width:820px){ .two{grid-template-columns:1fr} }
+
+/* storyboard */
+.story{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.frame{position:relative; padding-top:44px}
+.frame .num{position:absolute; top:14px; left:18px; font:700 .85rem var(--font-head); color:var(--ink-soft)}
+.frame .big{font-size:2.4rem}
+
+/* role switch */
+.seg{display:inline-flex; flex-wrap:wrap; background:var(--bg-2); border:1px solid var(--line); border-radius:999px; padding:5px; gap:2px}
+.seg button{border:none; background:transparent; color:var(--ink); padding:.55em 1.1em; border-radius:999px; font:700 .95rem var(--font-body); cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--teal); color:#fff} html.hc .seg button[aria-pressed="true"]{color:#000}
+.role[hidden]{display:none}
+
+/* agenda */
+.agenda{display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)); gap:10px; margin:14px 0}
+.agenda button{all:unset; box-sizing:border-box; cursor:pointer; text-align:center; background:var(--surface); border:3px solid var(--line); border-radius:16px; padding:12px 6px; transition:transform .3s}
+.agenda button:focus-visible{outline:4px solid var(--focus)}
+.agenda .e{font-size:2.3rem; display:block}
+.agenda .n{font-weight:700; font-size:.92rem}
+.agenda button.done{opacity:.45}
+.agenda button.now{border-color:var(--sun); transform:scale(1.06); box-shadow:0 0 0 6px var(--sun-soft)}
+.progress{height:12px; background:var(--bg-2); border:1px solid var(--line); border-radius:999px; overflow:hidden}
+.progress i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--leaf),var(--sun)); transition:width .4s}
+.steps4{counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:10px}
+.steps4 li{counter-increment:s; display:flex; gap:12px; align-items:flex-start; padding:12px; border-radius:14px; background:var(--bg-2)}
+.steps4 li::before{content:counter(s); flex:none; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; background:var(--teal); color:#fff; font:700 1rem var(--font-head)}
+html.hc .steps4 li::before{color:#000}
+.words{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 0}
+.word{padding:.5em 1em; border-radius:12px; background:var(--teal-soft); font-weight:700}
+.msg{display:flex; gap:12px; align-items:flex-start; padding:14px; border-radius:16px; background:var(--leaf-soft); margin-bottom:10px}
+.msg .av{font-size:1.8rem}
+.lock{display:flex; gap:10px; align-items:flex-start; padding:12px 14px; border-radius:14px; border:2px solid var(--line); font-size:.92rem}
+
+/* story */
+.tale{text-align:center; min-height:330px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px}
+.tale .scene{font-size:4.6rem; line-height:1}
+.tale .balloon{width:120px; height:120px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff8, transparent 40%), var(--coral); transform:scale(.6); transition:transform 3.5s ease-in-out}
+.tale .balloon.big{transform:scale(1)}
+.tale p{font:600 1.25rem var(--font-head); max-width:44ch}
+.dots{display:flex; gap:6px}
+.dots i{width:10px; height:10px; border-radius:50%; background:var(--line)}
+.dots i.on{background:var(--lilac)}
+
+/* create page */
+.pick{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 14px}
+.pick button{border:3px solid var(--line); background:var(--surface); color:var(--ink); border-radius:16px; padding:8px 10px; cursor:pointer; font:700 .88rem var(--font-body); display:flex; flex-direction:column; align-items:center; min-width:78px}
+.pick button span{font-size:1.9rem}
+.pick button[aria-pressed="true"]{border-color:var(--lilac); background:var(--lilac-soft)}
+canvas{width:100%; height:220px; background:#fff; border:2px dashed var(--line); border-radius:16px; touch-action:none; cursor:crosshair; display:block}
+.colors{display:flex; gap:8px; margin:8px 0}
+.colors button{width:34px; height:34px; border-radius:50%; border:3px solid var(--surface); box-shadow:0 0 0 2px var(--line); cursor:pointer}
+.colors button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+.book{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:12px; margin-top:12px}
+.page{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:10px; text-align:center; box-shadow:var(--shadow); animation:pop .4s}
+.page img{width:100%; border-radius:10px; background:#fff; border:1px solid var(--line)}
+.page .f{font-size:2rem}
+.page p{font-size:.9rem; margin:.3em 0}
+.rec{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.rec .dot{width:12px; height:12px; border-radius:50%; background:var(--coral); animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+
+/* votes */
+.votes{display:grid; gap:10px}
+.vote{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:10px 12px; border-radius:14px; background:var(--bg-2)}
+.vote button{border:2px solid var(--line); background:var(--surface); color:var(--ink); border-radius:12px; padding:6px 10px; font-size:1.5rem; cursor:pointer}
+.vote .lbl{font-weight:700}
+.vote .meter{height:10px; background:var(--surface); border-radius:999px; overflow:hidden; margin-top:6px; border:1px solid var(--line)}
+.vote .meter i{display:block; height:100%; width:0; background:var(--sun); transition:width .35s}
+.vote .ct{font:700 1.2rem var(--font-head); min-width:2ch; text-align:right}
+.pact{display:grid; gap:8px; margin:0; padding:0; list-style:none}
+.pact li{padding:12px 14px; border-radius:14px; background:var(--sun-soft); font-weight:700; display:flex; gap:10px; align-items:center}
+.wall{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px}
+.post{border-radius:16px; padding:14px; box-shadow:var(--shadow); border:1px solid var(--line); animation:pop .4s}
+.post .ty{font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft)}
+.post h4{margin:.2em 0; font:700 1.05rem var(--font-head)}
+.p1{background:var(--teal-soft)} .p2{background:var(--lilac-soft)} .p3{background:var(--sun-soft)} .p4{background:var(--coral-soft)}
+form.add{display:grid; gap:10px}
+form.add label{font-weight:700; font-size:.92rem}
+input, select, textarea{font:inherit; color:var(--ink); background:var(--surface); border:2px solid var(--line); border-radius:12px; padding:.6em .8em; width:100%}
+
+/* TEP */
+.lights{display:flex; gap:14px; flex-wrap:wrap; margin:10px 0}
+.lights button{border:3px solid var(--line); background:var(--surface); color:var(--ink); border-radius:20px; padding:12px 16px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; font:700 .9rem var(--font-body); min-width:96px}
+.lights .c{width:46px; height:46px; border-radius:50%}
+.lights .g .c{background:#3fa34d} .lights .y .c{background:#f2b632} .lights .r .c{background:#e0503a}
+.stack{display:flex; height:30px; border-radius:999px; overflow:hidden; border:1px solid var(--line); background:var(--bg-2)}
+.stack i{display:block; height:100%; transition:width .4s}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:.88rem; margin-top:6px}
+.legend span::before{content:""; display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:6px; vertical-align:-1px; background:var(--c)}
+.days{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:10px}
+.day{text-align:center; padding:10px 4px; border-radius:14px; background:var(--bg-2)}
+.day b{display:block; font:700 1.5rem var(--font-head)}
+.day button{margin-top:6px; border:2px solid var(--line); background:var(--surface); color:var(--ink); border-radius:10px; padding:4px 8px; cursor:pointer; font-weight:700}
+.check{display:grid; gap:8px}
+.check label{display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border-radius:12px; background:var(--bg-2); cursor:pointer}
+.check input{width:22px; height:22px; flex:none; margin-top:2px; accent-color:var(--teal)}
+.board{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.kpi{display:flex; gap:12px; align-items:center}
+.kpi .ring{--p:0; width:64px; height:64px; border-radius:50%; flex:none; background:conic-gradient(var(--leaf) calc(var(--p)*1%), var(--bg-2) 0); display:grid; place-items:center; transition:--p .5s}
+.kpi .ring::after{content:attr(data-v); width:48px; height:48px; border-radius:50%; background:var(--surface); display:grid; place-items:center; font:700 .9rem var(--font-head)}
+.kpi b{display:block; font-size:.95rem}
+.kpi span{font-size:.82rem; color:var(--ink-soft)}
+
+footer{padding:36px 0 110px; background:var(--bg-2); border-top:1px solid var(--line); text-align:center; color:var(--ink-soft); font-size:.92rem}
+
+/* a11y panel */
+.a11y-btn{position:fixed; right:18px; bottom:18px; z-index:150; width:62px; height:62px; border-radius:50%; border:none; background:var(--lilac); color:#fff; font-size:1.8rem; cursor:pointer; box-shadow:var(--shadow)}
+html.hc .a11y-btn{color:#000}
+.a11y{position:fixed; right:18px; bottom:92px; z-index:150; width:min(330px, calc(100vw - 32px)); max-height:calc(100vh - 120px); overflow:auto; background:var(--surface); border:1px solid var(--line); border-radius:22px; box-shadow:0 20px 60px rgba(0,0,0,.25); padding:18px; display:none}
+.a11y.open{display:block}
+.opt{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-weight:700}
+.toggle{position:relative; width:52px; height:28px; border-radius:999px; border:2px solid var(--ink); background:var(--bg-2); cursor:pointer; flex:none}
+.toggle::after{content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:var(--ink); transition:left .2s}
+.toggle[aria-checked="true"]{background:var(--teal)}
+.toggle[aria-checked="true"]::after{left:27px; background:#fff}
+.size button{width:38px; height:34px; border-radius:10px; border:2px solid var(--ink); background:var(--bg); color:var(--ink); font-weight:700; cursor:pointer}
+
+@media print{
+  header.top, .route, .dua, .a11y-btn, .a11y, footer, .panel:not(#p1), .no-print{display:none !important}
+  .role{display:block !important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#main"><span class="nest" aria-hidden="true"></span>Ruta Nido</a>
+    <a class="back" href="index.html">← Fase 2: situación y hallazgos</a>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Fase 3 · Prototipo de media fidelidad</span>
+    <h1 style="font-size:clamp(2rem,5.5vw,3.3rem)">Ruta Nido: un aula que aprende a acoger</h1>
+    <p class="lead">Recorre los cuatro momentos de la estrategia TIC-TAC-TEP. Cada pantalla simula cómo la usarían los niños, los docentes y las familias del grado Jardín. Esta página no guarda ni envía datos: lo que hagas aquí se borra al recargar.</p>
+
+    <div class="route" role="tablist" aria-label="Momentos de la ruta">
+      <button role="tab" class="m0" id="t0" aria-controls="p0" aria-selected="true"><span class="e" aria-hidden="true">🧒</span><span class="k">Punto de partida</span><span class="t">Situación</span><span class="s">Sin rutina ni respuesta común</span></button>
+      <button role="tab" class="m1" id="t1" aria-controls="p1" aria-selected="false" tabindex="-1"><span class="e" aria-hidden="true">📣</span><span class="k c1">TIC · acceder y comunicar</span><span class="t">Todos sabemos lo mismo</span><span class="s">Rutina, palabras y protocolo</span></button>
+      <button role="tab" class="m2" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1"><span class="e" aria-hidden="true">📖</span><span class="k c2">TAC · aprender y crear</span><span class="t">Mi libro de calma</span><span class="s">Cuento y página propia</span></button>
+      <button role="tab" class="m3" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1"><span class="e" aria-hidden="true">🤝</span><span class="k c3">TAC · colaborar y construir</span><span class="t">El pacto del nido</span><span class="s">Votar, aportar, acordar</span></button>
+      <button role="tab" class="m4" id="t4" aria-controls="p4" aria-selected="false" tabindex="-1"><span class="e" aria-hidden="true">🌱</span><span class="k c4">TEP · participar y transformar</span><span class="t">Nuestro salón acoge</span><span class="s">Asamblea y rincón en uso</span></button>
+    </div>
+    <p class="dua">DUA transversal · implicación 7.1, 7.3, 8.3, 9.2, 9.3 · representación 1.2, 1.3, 2.1 · acción y expresión 5.1, 6.2</p>
+  </div>
+</section>
+
+<!-- ============ 0 SITUACIÓN / STORYBOARD ============ -->
+<section class="panel wrap" id="p0" role="tabpanel" aria-labelledby="t0">
+  <div class="panel-head">
+    <div><h2>Un día en Jardín, antes y después</h2><p class="lead" style="margin:0">El storyboard muestra el cambio que busca la ruta en el mismo momento del día.</p></div>
+    <button class="speak" data-read="#p0">🔊 Escuchar</button>
+  </div>
+  <div class="two">
+    <div class="card">
+      <span class="pill" style="background:var(--coral-soft)">Hoy</span>
+      <div class="grid story" style="margin-top:12px">
+        <div class="card frame"><span class="num">1</span><div class="big" aria-hidden="true">🔄</div><p>Llega un docente nuevo y da una instrucción larga.</p></div>
+        <div class="card frame"><span class="num">2</span><div class="big" aria-hidden="true">🔊</div><p>El ruido sube y el Estudiante A no sabe qué viene.</p></div>
+        <div class="card frame"><span class="num">3</span><div class="big" aria-hidden="true">🚪</div><p>Sale del salón sin ser visto; el grupo se asusta.</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="pill" style="background:var(--leaf-soft)">Con la Ruta Nido</span>
+      <div class="grid story" style="margin-top:12px">
+        <div class="card frame"><span class="num">1</span><div class="big" aria-hidden="true">🗓️</div><p>El docente leyó la ficha y señala la agenda: «ahora, trabajo en mesa».</p></div>
+        <div class="card frame"><span class="num">2</span><div class="big" aria-hidden="true">✋</div><p>Al sentirse abrumado, muestra su tarjeta de pausa.</p></div>
+        <div class="card frame"><span class="num">3</span><div class="big" aria-hidden="true">🧸</div><p>Va al rincón que ayudó a diseñar, respira con el globo y vuelve.</p></div>
+      </div>
+    </div>
+  </div>
+  <p style="margin-top:20px"><button class="btn btn-primary" data-go="1">Empezar por el momento TIC →</button></p>
+</section>
+
+<!-- ============ 1 TIC ============ -->
+<section class="panel wrap" id="p1" role="tabpanel" aria-labelledby="t1" hidden>
+  <div class="panel-head">
+    <div><span class="eyebrow" style="color:var(--teal)">TIC · acceder y comunicar</span><h2>Todos sabemos lo mismo</h2>
+      <p class="lead" style="margin:0">La misma información, en el formato que cada persona puede usar. Cambia de rol para ver cada vista.</p></div>
+    <div class="chips"><span class="pill">DUA 1.2 · 1.3</span><span class="pill">2.1</span><span class="pill">6.2</span><span class="pill">Hallazgos 1 y 2</span></div>
+  </div>
+  <div class="seg no-print" role="group" aria-label="Elegir vista">
+    <button aria-pressed="true" data-role="kid">🧒 Niños</button>
+    <button aria-pressed="false" data-role="teacher">🧑‍🏫 Docentes</button>
+    <button aria-pressed="false" data-role="family">👨‍👩‍👦 Familias</button>
+  </div>
+
+  <div class="role card" data-view="kid" style="margin-top:16px">
+    <h3>Agenda visual del día</h3>
+    <p>Toca cada paso para escucharlo, o avanza con el botón. Proyectada en el tablero e impresa en la pared.</p>
+    <div class="progress" aria-hidden="true"><i id="agBar"></i></div>
+    <div class="agenda" id="agenda"></div>
+    <p class="sr" id="agStatus" aria-live="polite"></p>
+    <div class="no-print" style="display:flex; gap:10px; flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" id="agNext">▶ Siguiente paso</button>
+      <button class="btn btn-ghost btn-sm" id="agReset">↺ Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="role" data-view="teacher" hidden style="margin-top:16px">
+    <div class="two">
+      <div class="card">
+        <h3>Ficha «Cómo acompañamos en Jardín»</h3>
+        <p class="note">Una página, la misma para todos los adultos que entran al aula.</p>
+        <ol class="steps4">
+          <li><div><b>Anticipar.</b> Antes de cada cambio, señala la agenda y di la palabra clave. Si cambias de docente, preséntate.</div></li>
+          <li><div><b>Ofrecer la pausa.</b> Ante señales de malestar, muestra la tarjeta y di «¿pausa?» con voz baja.</div></li>
+          <li><div><b>Acompañar en el rincón.</b> Respira con él (globo); pocas palabras; sin castigo ni regaño.</div></li>
+          <li><div><b>Reconectar.</b> «Volvemos». Retoma la actividad con un paso pequeño y reconoce el logro.</div></li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Palabras y señales comunes</h3>
+        <div class="words"><span class="word">⏸️ «Pausa»</span><span class="word">🌬️ «Respiro»</span><span class="word">↩️ «Volvemos»</span></div>
+        <div class="words"><span class="word" style="background:var(--sun-soft)">🟨 Tarjeta de pausa</span><span class="word" style="background:var(--sun-soft)">🤚 Mano en el pecho</span></div>
+        <h3 style="margin-top:18px">Micro-video (90 s)</h3>
+        <div class="card" style="background:var(--bg-2); text-align:center; padding:30px"><span style="font-size:2.6rem" aria-hidden="true">🎬</span><p class="note" style="margin:0">La directora de curso modela los cuatro pasos. Con subtítulos.</p></div>
+        <div class="lock" style="margin-top:14px"><span aria-hidden="true">🔒</span><div>Carpeta de Drive con acceso restringido al equipo docente y orientación. La ficha describe estrategias, no diagnósticos.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="role" data-view="family" hidden style="margin-top:16px">
+    <div class="two">
+      <div class="card">
+        <h3>Mensajes para la familia</h3>
+        <div class="msg"><span class="av" aria-hidden="true">👩‍🏫</span><div><b>Directora de curso</b><p style="margin:.2em 0">Esta semana practicamos «pausa» y la respiración del globo. En casa pueden usar las mismas palabras.</p><button class="speak" data-say="Esta semana practicamos pausa y la respiración del globo. En casa pueden usar las mismas palabras.">🔊 Escuchar audio</button></div></div>
+        <div class="msg" style="background:var(--lilac-soft)"><span class="av" aria-hidden="true">🧠</span><div><b>Orientación</b><p style="margin:.2em 0">Gracias por compartir la canción de cuna. Ya está en el rincón de calma.</p><button class="speak" data-say="Gracias por compartir la canción de cuna. Ya está en el rincón de calma.">🔊 Escuchar audio</button></div></div>
+        <p class="note">Llegan por el canal que la familia ya usa, en audio o video corto. También se envían en papel.</p>
+      </div>
+      <div class="card">
+        <h3>Agenda para la nevera</h3>
+        <p>La misma secuencia de la mañana, adaptada a casa: despertar, vestirse, desayunar, mirar la agenda y salir al colegio.</p>
+        <div class="agenda" style="grid-template-columns:repeat(5,1fr)">
+          <button tabindex="-1" aria-hidden="true"><span class="e">⏰</span><span class="n">Despertar</span></button>
+          <button tabindex="-1" aria-hidden="true"><span class="e">👕</span><span class="n">Vestirse</span></button>
+          <button tabindex="-1" aria-hidden="true"><span class="e">🥣</span><span class="n">Desayuno</span></button>
+          <button tabindex="-1" aria-hidden="true"><span class="e">🗓️</span><span class="n">Agenda</span></button>
+          <button tabindex="-1" aria-hidden="true"><span class="e">🎒</span><span class="n">Al colegio</span></button>
+        </div>
+        <button class="btn btn-ghost btn-sm no-print" onclick="window.print()">🖨️ Imprimir agenda</button>
+      </div>
+    </div>
+  </div>
+  <p style="margin-top:20px" class="no-print"><button class="btn btn-primary" data-go="2">Siguiente: aprender y crear →</button></p>
+</section>
+
+<!-- ============ 2 TAC CREAR ============ -->
+<section class="panel wrap" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+  <div class="panel-head">
+    <div><span class="eyebrow" style="color:var(--lilac)">TAC · aprender y crear</span><h2>Mi libro de calma</h2>
+      <p class="lead" style="margin:0">Primero el cuento interactivo; después cada niño crea su página con dibujo, carita y su propia voz.</p></div>
+    <div class="chips"><span class="pill">DUA 7.1</span><span class="pill">9.2</span><span class="pill">5.1</span><span class="pill">Hallazgo 3</span></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <h3>Cuento: «El globo que se calma»</h3>
+      <div class="tale" aria-live="polite">
+        <div class="scene" id="taleScene" aria-hidden="true">🎈</div>
+        <div class="balloon" id="taleBalloon" hidden aria-hidden="true"></div>
+        <p id="taleText"></p>
+        <div class="dots" id="taleDots" aria-hidden="true"></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center">
+          <button class="btn btn-ghost btn-sm" id="taleBack">← Atrás</button>
+          <button class="speak" id="taleSay">🔊 Escuchar</button>
+          <button class="btn btn-primary btn-sm" id="taleNext">Siguiente →</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Crear mi página</h3>
+      <p class="note" style="margin:0">1. ¿Cómo me siento?</p>
+      <div class="pick" id="pickEmo" role="group" aria-label="Elegir emoción"></div>
+      <p class="note" style="margin:0">2. ¿Qué puedo hacer?</p>
+      <div class="pick" id="pickStr" role="group" aria-label="Elegir estrategia"></div>
+      <p class="note" style="margin:0">3. Mi dibujo</p>
+      <div class="colors" id="colors" role="group" aria-label="Color del lápiz"></div>
+      <canvas id="draw" width="600" height="300" aria-label="Lienzo para dibujar. También puedes saltarte este paso."></canvas>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px"><button class="btn btn-ghost btn-sm" id="clearDraw">Borrar dibujo</button></div>
+      <p class="note" style="margin:12px 0 4px">4. Mi voz (opcional)</p>
+      <div class="rec">
+        <button class="btn btn-ghost btn-sm" id="recBtn">🎙️ Grabar</button>
+        <span id="recState" class="note" aria-live="polite">La grabación se queda en este dispositivo.</span>
+        <audio id="recAudio" controls hidden></audio>
+      </div>
+      <p style="margin-top:14px"><button class="btn btn-primary" id="savePage">📖 Guardar en el libro del curso</button></p>
+      <p id="pageMsg" class="note" aria-live="polite"></p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>Libro de calma del curso <span class="pill" id="bookCount">0 de 20 páginas</span></h3>
+    <div class="book" id="book"><p class="note">Aún no hay páginas. Crea la primera.</p></div>
+  </div>
+  <p style="margin-top:20px"><button class="btn btn-primary" data-go="3">Siguiente: colaborar y construir →</button></p>
+</section>
+
+<!-- ============ 3 TAC COLABORAR ============ -->
+<section class="panel wrap" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+  <div class="panel-head">
+    <div><span class="eyebrow" style="color:#9a6a00">TAC · colaborar y construir</span><h2>El pacto del nido</h2>
+      <p class="lead" style="margin:0">El grupo vota el rincón y las normas; las familias aportan sus saberes; los docentes acuerdan el protocolo.</p></div>
+    <div class="chips"><span class="pill">DUA 8.3</span><span class="pill">5.1</span><span class="pill">7.1</span><span class="pill">Hallazgos 2 y 5</span></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <h3>¿Qué tendrá nuestro rincón de calma?</h3>
+      <p class="note">Cada grupo de cuatro toca su pictograma favorito. Compañero guía de la ronda: <b id="guide">Grupo 1</b>.</p>
+      <div class="votes" id="votesCorner"></div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px"><button class="btn btn-ghost btn-sm" id="nextGroup">Siguiente grupo ↻</button></div>
+    </div>
+    <div class="card">
+      <h3>Nuestras normas, en positivo</h3>
+      <p class="note">Toca para votar. Las cinco con más votos forman el pacto.</p>
+      <div class="votes" id="votesRules"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>Pacto del nido <span class="pill">se actualiza con los votos</span></h3>
+    <ol class="pact" id="pact"></ol>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div class="panel-head" style="margin-bottom:10px"><div><h3 style="margin:0">Muro de saberes de las familias</h3><p class="note" style="margin:0">Simula el Padlet privado del curso. Los aportes que ves son ejemplos.</p></div><span class="pill">🔒 Enlace privado con contraseña</span></div>
+    <div class="two">
+      <div class="wall" id="wall"></div>
+      <form class="add" id="addPost">
+        <label for="pType">Tipo de aporte</label>
+        <select id="pType"><option>Canción de cuna</option><option>Juego</option><option>Objeto de calma</option><option>Palabra o dicho de casa</option></select>
+        <label for="pTitle">Nombre del aporte</label>
+        <input id="pTitle" required maxlength="60" placeholder="Ej.: Arrullo de la abuela">
+        <label for="pText">Cuéntanos (o graba un audio en el Padlet real)</label>
+        <textarea id="pText" rows="3" maxlength="200" placeholder="¿Cómo lo usan en casa?"></textarea>
+        <label for="pFrom">Origen (opcional)</label>
+        <input id="pFrom" maxlength="40" placeholder="Ej.: familia de Boyacá">
+        <button class="btn btn-primary" type="submit">Agregar al muro</button>
+        <p class="note" style="margin:0">Sin nombres completos ni fotos de los niños. Aportes también en papel.</p>
+      </form>
+    </div>
+  </div>
+  <p style="margin-top:20px"><button class="btn btn-primary" data-go="4">Siguiente: participar y transformar →</button></p>
+</section>
+
+<!-- ============ 4 TEP ============ -->
+<section class="panel wrap" id="p4" role="tabpanel" aria-labelledby="t4" hidden>
+  <div class="panel-head">
+    <div><span class="eyebrow" style="color:var(--leaf)">TEP · participar y transformar</span><h2>Nuestro salón acoge</h2>
+      <p class="lead" style="margin:0">Asamblea semanal, registro del rincón y protocolo firmado: la transformación se vuelve visible.</p></div>
+    <div class="chips"><span class="pill">DUA 9.3</span><span class="pill">7.3</span><span class="pill">8.3</span><span class="pill">Hallazgos 3, 4 y 5</span></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <h3>Asamblea del nido · semáforo de la semana</h3>
+      <p class="note">Cada niño toca el color que muestra cómo se sintió.</p>
+      <div class="lights" role="group" aria-label="Semáforo emocional">
+        <button class="g" data-l="g"><span class="c" aria-hidden="true"></span>Tranquilo</button>
+        <button class="y" data-l="y"><span class="c" aria-hidden="true"></span>A veces difícil</button>
+        <button class="r" data-l="r"><span class="c" aria-hidden="true"></span>Difícil</button>
+      </div>
+      <div class="stack" aria-hidden="true"><i id="sG" style="background:#3fa34d"></i><i id="sY" style="background:#f2b632"></i><i id="sR" style="background:#e0503a"></i></div>
+      <div class="legend"><span style="--c:#3fa34d" id="lG">Tranquilo 0</span><span style="--c:#f2b632" id="lY">A veces 0</span><span style="--c:#e0503a" id="lR">Difícil 0</span></div>
+      <h3 style="margin-top:18px">Decisión de la semana</h3>
+      <p id="decQ"><b>¿Mantenemos «Pedimos pausa con la tarjeta»?</b></p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" data-dec="keep">👍 Mantener</button>
+        <button class="btn btn-ghost btn-sm" data-dec="change">🔄 Cambiar</button>
+      </div>
+      <p class="note" id="decOut" aria-live="polite"></p>
+    </div>
+    <div class="card">
+      <h3>Registro del rincón de calma</h3>
+      <p class="note">Veces que un niño usó la pausa por iniciativa propia. Evidencia para el equipo y para el PIAR.</p>
+      <div class="days" id="days"></div>
+      <h3 style="margin-top:18px">Protocolo común firmado</h3>
+      <div class="check" id="sign"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>Tablero de transformación</h3>
+    <p class="note">Se llena con lo que hiciste en los momentos anteriores de este prototipo.</p>
+    <div class="grid board" id="board"></div>
+  </div>
+  <div class="card" style="margin-top:18px; background:var(--leaf-soft); border:none">
+    <h3>🎬 Cápsula «Nuestro salón acoge»</h3>
+    <p style="margin:0">Dos minutos con las voces y dibujos de los niños, presentada en la reunión de padres: el pacto, el rincón y la rutina para casa.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Ruta Nido</b> · Prototipo de la Fase 3, estrategia TIC-TAC-TEP · Recursos digitales para la Educación · Maestría en Educación Inclusiva e Intercultural, Universidad El Bosque · 2026</p>
+    <p>Equipo Tejido Diverso. El estudiante se identifica como «Estudiante A». Los pictogramas del proyecto real provienen de <a href="https://arasaac.org/" target="_blank" rel="noopener">ARASAAC</a>; aquí se usan emojis como marcadores.</p>
+  </div>
+</footer>
+
+<button class="a11y-btn" id="aBtn" aria-expanded="false" aria-controls="a11y" aria-label="Opciones de accesibilidad">♿</button>
+<div class="a11y" id="a11y" role="dialog" aria-labelledby="aT">
+  <h2 id="aT" style="font-size:1.25rem">Ajusta la página a ti</h2>
+  <div class="opt"><span>Tamaño del texto</span><span class="size"><button id="fsMinus" aria-label="Reducir texto">A−</button> <button id="fsReset" aria-label="Tamaño normal">A</button> <button id="fsPlus" aria-label="Aumentar texto">A+</button></span></div>
+  <div class="opt"><span id="o1">Modo oscuro</span><button class="toggle" role="switch" aria-checked="false" aria-labelledby="o1" data-opt="dark"></button></div>
+  <div class="opt"><span id="o2">Alto contraste</span><button class="toggle" role="switch" aria-checked="false" aria-labelledby="o2" data-opt="hc"></button></div>
+  <div class="opt"><span id="o3">Fuente de lectura fácil</span><button class="toggle" role="switch" aria-checked="false" aria-labelledby="o3" data-opt="dys"></button></div>
+  <div class="opt"><span id="o4">Pausar animaciones</span><button class="toggle" role="switch" aria-checked="false" aria-labelledby="o4" data-opt="calm"></button></div>
+  <div class="opt" style="border:none"><span id="o5">Leer en voz alta al tocar</span><button class="toggle" role="switch" aria-checked="true" aria-labelledby="o5" data-opt="voice"></button></div>
+</div>
+
+<script>
+const $ = (s, c=document) => c.querySelector(s);
+const $$ = (s, c=document) => [...c.querySelectorAll(s)];
+const store = { get(k){ try{ return localStorage.getItem(k) }catch(e){ return null } }, set(k,v){ try{ localStorage.setItem(k,v) }catch(e){} } };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const calm = () => document.documentElement.classList.contains('calm') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+let voiceOn = store.get('rn-voice') !== '0';
+
+/* ---------- voz ---------- */
+function say(text, force){
+  if(!(voiceOn || force) || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text); u.lang = 'es-CO'; u.rate = .95;
+  const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('es')); if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+function textOf(sel){ const c = $(sel).cloneNode(true); $$('button, [aria-hidden="true"], .chips', c).forEach(n => n.remove()); return c.innerText.replace(/\s+/g,' ').trim(); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('.speak'); if(!b) return;
+  if(b.dataset.read) say(textOf(b.dataset.read), true);
+  else if(b.dataset.say) say(b.dataset.say, true);
+});
+
+/* ---------- pestañas de la ruta ---------- */
+const tabs = $$('.route [role="tab"]');
+function selectTab(t, focus){
+  tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; });
+  if(focus) t.focus();
+  if(t.id === 't4') renderBoard();
+  history.replaceState(null, '', '#' + t.getAttribute('aria-controls'));
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => selectTab(t));
+  t.addEventListener('keydown', e => {
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown'){ e.preventDefault(); selectTab(tabs[(i+1)%tabs.length], true); }
+    if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); selectTab(tabs[(i-1+tabs.length)%tabs.length], true); }
+  });
+});
+$$('[data-go]').forEach(b => b.addEventListener('click', () => { selectTab(tabs[+b.dataset.go]); $('.route').scrollIntoView({behavior: calm() ? 'auto' : 'smooth'}); }));
+const startHash = location.hash.match(/^#p([0-4])$/); if(startHash) selectTab(tabs[+startHash[1]]);
+
+/* ---------- TIC: roles ---------- */
+$$('[data-role]').forEach(b => b.addEventListener('click', () => {
+  $$('[data-role]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $$('.role').forEach(v => v.hidden = v.dataset.view !== b.dataset.role);
+}));
+
+/* ---------- TIC: agenda ---------- */
+const AGENDA = [['👋','Llegada y saludo'],['🗓️','Mirar la agenda'],['🎲','Juego libre'],['✏️','Trabajo en mesa'],['🧸','Pausa de calma'],['🍎','Lonchera'],['🎵','Canción grupal'],['🎒','Despedida']];
+let ag = -1; const usage = { agenda:false };
+function renderAgenda(){
+  $('#agenda').innerHTML = AGENDA.map(([e,n], i) =>
+    `<button class="${i < ag ? 'done' : ''} ${i === ag ? 'now' : ''}" data-i="${i}" aria-label="Paso ${i+1}: ${n}${i === ag ? ', ahora' : ''}"><span class="e" aria-hidden="true">${e}</span><span class="n">${n}</span></button>`).join('');
+  $('#agBar').style.width = ((ag+1) / AGENDA.length * 100) + '%';
+}
+$('#agenda').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if(b) say(`Paso ${+b.dataset.i+1}. ${AGENDA[+b.dataset.i][1]}`); });
+$('#agNext').addEventListener('click', () => {
+  if(ag >= AGENDA.length - 1){ $('#agStatus').textContent = '¡Terminamos el día!'; say('¡Terminamos el día! Muy bien.'); return; }
+  ag++; usage.agenda = true; renderAgenda();
+  const m = `Ahora: ${AGENDA[ag][1]}`; $('#agStatus').textContent = m; say(m);
+});
+$('#agReset').addEventListener('click', () => { ag = -1; renderAgenda(); });
+renderAgenda();
+
+/* ---------- TAC: cuento ---------- */
+const TALE = [
+  { s:'🎈', t:'Había una vez un globo rojo que vivía en un salón lleno de niños.' },
+  { s:'😣', t:'Un día hubo mucho ruido. El globo se sintió apretado, apretado… ¡y quería salir volando!' },
+  { s:'🧸', t:'Su amiga la profe le mostró la tarjeta de pausa y lo llevó al rincón de calma.' },
+  { s:'balloon', t:'Allí respiraron juntos: inhala… el globo crece. Exhala… el globo se calma.' },
+  { s:'😊', t:'El globo volvió a jugar con sus amigos. Ahora sabe pedir una pausa cuando lo necesita.' }
+];
+let ti = 0, breathT;
+function renderTale(){
+  const p = TALE[ti]; clearInterval(breathT);
+  const isB = p.s === 'balloon';
+  $('#taleScene').hidden = isB; $('#taleBalloon').hidden = !isB;
+  if(!isB) $('#taleScene').textContent = p.s;
+  else if(!calm()){ let big = false; $('#taleBalloon').classList.remove('big'); breathT = setInterval(() => { big = !big; $('#taleBalloon').classList.toggle('big', big); }, 3500); setTimeout(() => $('#taleBalloon').classList.add('big'), 50); }
+  $('#taleText').textContent = p.t;
+  $('#taleDots').innerHTML = TALE.map((_, i) => `<i class="${i === ti ? 'on' : ''}"></i>`).join('');
+  $('#taleBack').disabled = ti === 0;
+  $('#taleNext').textContent = ti === TALE.length - 1 ? '↺ Otra vez' : 'Siguiente →';
+}
+$('#taleNext').addEventListener('click', () => { ti = ti === TALE.length - 1 ? 0 : ti + 1; usage.tale = true; renderTale(); say(TALE[ti].t); });
+$('#taleBack').addEventListener('click', () => { if(ti > 0){ ti--; renderTale(); say(TALE[ti].t); } });
+$('#taleSay').addEventListener('click', () => say(TALE[ti].t, true));
+renderTale();
+
+/* ---------- TAC: crear página ---------- */
+const EMOS = [['😊','feliz'],['😢','triste'],['😠','enojado'],['😨','asustado'],['😵‍💫','con mucho ruido']];
+const STRS = [['🎈','respiro con el globo'],['✋','pido una pausa'],['🧸','voy al rincón de calma'],['🗓️','miro mi agenda'],['🤗','busco a mi profe']];
+let emo = null, str = null, color = '#26303a', recURL = null;
+function picks(id, list, set){
+  $(id).innerHTML = list.map(([e,n], i) => `<button aria-pressed="false" data-i="${i}"><span aria-hidden="true">${e}</span>${n}</button>`).join('');
+  $(id).addEventListener('click', ev => { const b = ev.target.closest('[data-i]'); if(!b) return;
+    $$(id + ' button').forEach(x => x.setAttribute('aria-pressed', x === b)); set(list[+b.dataset.i]); say(list[+b.dataset.i][1]); });
+}
+picks('#pickEmo', EMOS, v => emo = v); picks('#pickStr', STRS, v => str = v);
+
+const COLORS = ['#26303a','#e0503a','#1f8a86','#f2b632','#6f5cc7','#3f8f4b'];
+$('#colors').innerHTML = COLORS.map((c, i) => `<button style="background:${c}" aria-label="Color ${i+1}" aria-pressed="${i===0}" data-c="${c}"></button>`).join('');
+$('#colors').addEventListener('click', e => { const b = e.target.closest('[data-c]'); if(!b) return; color = b.dataset.c; $$('#colors button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+const cv = $('#draw'), cx = cv.getContext('2d'); let drawing = false, drew = false;
+function clearCanvas(){ cx.fillStyle = '#fff'; cx.fillRect(0,0,cv.width,cv.height); drew = false; }
+clearCanvas();
+const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; };
+cv.addEventListener('pointerdown', e => { drawing = true; drew = true; cv.setPointerCapture(e.pointerId); const [x,y] = pos(e); cx.beginPath(); cx.moveTo(x,y); });
+cv.addEventListener('pointermove', e => { if(!drawing) return; const [x,y] = pos(e); cx.lineTo(x,y); cx.strokeStyle = color; cx.lineWidth = 7; cx.lineCap = 'round'; cx.lineJoin = 'round'; cx.stroke(); });
+['pointerup','pointercancel','pointerleave'].forEach(t => cv.addEventListener(t, () => drawing = false));
+$('#clearDraw').addEventListener('click', clearCanvas);
+
+let rec = null, chunks = [];
+$('#recBtn').addEventListener('click', async () => {
+  if(rec && rec.state === 'recording'){ rec.stop(); return; }
+  if(!navigator.mediaDevices || !window.MediaRecorder){ $('#recState').textContent = 'Este navegador no permite grabar; puedes seguir sin audio.'; return; }
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    rec = new MediaRecorder(stream); chunks = [];
+    rec.ondataavailable = e => chunks.push(e.data);
+    rec.onstop = () => { stream.getTracks().forEach(t => t.stop()); if(recURL) URL.revokeObjectURL(recURL);
+      recURL = URL.createObjectURL(new Blob(chunks, { type: rec.mimeType })); $('#recAudio').src = recURL; $('#recAudio').hidden = false;
+      $('#recBtn').textContent = '🎙️ Grabar de nuevo'; $('#recState').textContent = 'Grabación lista. No sale de este dispositivo.'; };
+    rec.start(); $('#recBtn').textContent = '⏹ Detener'; $('#recState').innerHTML = '<span class="dot" aria-hidden="true"></span> Grabando… di: «Cuando me siento…, yo puedo…»';
+  }catch(err){ $('#recState').textContent = 'No se dio permiso al micrófono; puedes seguir sin audio.'; }
+});
+
+const pages = [];
+$('#savePage').addEventListener('click', () => {
+  if(!emo || !str){ $('#pageMsg').textContent = 'Elige una carita y una estrategia para guardar tu página.'; say('Elige una carita y una estrategia.'); return; }
+  const phrase = `Cuando me siento ${emo[1]}, yo ${str[1]}.`;
+  pages.push({ emo, str, img: drew ? cv.toDataURL('image/png') : null, audio: recURL, phrase });
+  recURL = null; $('#recAudio').hidden = true; $('#recBtn').textContent = '🎙️ Grabar';
+  renderBook(); clearCanvas();
+  $('#pageMsg').textContent = '¡Página guardada en el libro del curso!'; say(phrase);
+});
+function renderBook(){
+  $('#bookCount').textContent = `${pages.length} de 20 páginas`;
+  if(!pages.length) return;
+  $('#book').innerHTML = pages.map((p, i) => `<div class="page"><div class="f" aria-hidden="true">${p.emo[0]} → ${p.str[0]}</div>${p.img ? `<img src="${p.img}" alt="Dibujo de la página ${i+1}">` : ''}<p><b>${esc(p.phrase)}</b></p>${p.audio ? `<audio controls src="${p.audio}" style="width:100%"></audio>` : ''}</div>`).join('');
+}
+
+/* ---------- TAC: colaborar ---------- */
+const CORNER = [['🧸','Peluches suaves'],['🎧','Audífonos para el ruido'],['🛋️','Cojines'],['📚','Cuentos'],['🫧','Botella de calma'],['🔴','Pelota para apretar']];
+const RULES = [['✋','Pedimos pausa con la tarjeta'],['🤫','Hablamos con voz suave'],['🤝','Ayudamos a un amigo'],['🧸','Cuidamos el rincón'],['🗓️','Miramos la agenda'],['🧹','Cuidamos los materiales'],['💬','Decimos cómo nos sentimos'],['🚪','Si salimos, vamos con un adulto']];
+const vC = CORNER.map((_, i) => [3,2,1,2,1,2][i]), vR = RULES.map((_, i) => [3,1,2,2,1,1,2,3][i]);
+let group = 1;
+function voteList(id, list, votes, onChange){
+  const draw = () => {
+    const max = Math.max(...votes, 1);
+    $(id).innerHTML = list.map(([e,n], i) => `<div class="vote"><button data-i="${i}" aria-label="Votar por ${n}">${e}</button><div><div class="lbl">${n}</div><div class="meter" aria-hidden="true"><i style="width:${votes[i]/max*100}%"></i></div></div><span class="ct" aria-label="${votes[i]} votos">${votes[i]}</span></div>`).join('');
+  };
+  $(id).addEventListener('click', e => { const b = e.target.closest('[data-i]'); if(!b) return; votes[+b.dataset.i]++; usage.votes = (usage.votes || 0) + 1; draw(); onChange && onChange(); say(list[+b.dataset.i][1]); $(`${id} [data-i="${b.dataset.i}"]`).focus(); });
+  draw();
+}
+function renderPact(){
+  const top = RULES.map((r, i) => [r, vR[i], i]).sort((a,b) => b[1]-a[1] || a[2]-b[2]).slice(0,5);
+  $('#pact').innerHTML = top.map(([r]) => `<li><span aria-hidden="true" style="font-size:1.4rem">${r[0]}</span>${r[1]}</li>`).join('');
+}
+voteList('#votesCorner', CORNER, vC); voteList('#votesRules', RULES, vR, renderPact); renderPact();
+$('#nextGroup').addEventListener('click', () => { group = group % 5 + 1; $('#guide').textContent = `Grupo ${group}`; say(`Ahora vota el grupo ${group}`); });
+
+const POSTS = [
+  { ty:'Canción de cuna', t:'Arrullo de la abuela', x:'Lo cantamos bajito antes de dormir; lo calma cuando está inquieto.', f:'familia de ejemplo', c:'p1' },
+  { ty:'Juego', t:'La gallina ciega, despacio', x:'Un juego tradicional que hacemos en casa con turnos y risas.', f:'familia de ejemplo', c:'p3' },
+  { ty:'Objeto de calma', t:'Una mantica tejida', x:'La tejió la abuela; abrazarla le ayuda a respirar.', f:'familia de ejemplo', c:'p2' }
+];
+function renderWall(){ $('#wall').innerHTML = POSTS.map(p => `<div class="post ${p.c}"><span class="ty">${esc(p.ty)}</span><h4>${esc(p.t)}</h4><p style="margin:.2em 0; font-size:.92rem">${esc(p.x)}</p>${p.f ? `<span class="note">${esc(p.f)}</span>` : ''}</div>`).join(''); }
+renderWall();
+$('#addPost').addEventListener('submit', e => {
+  e.preventDefault();
+  const t = $('#pTitle').value.trim(); if(!t) return;
+  POSTS.unshift({ ty:$('#pType').value, t, x:$('#pText').value.trim(), f:$('#pFrom').value.trim(), c:['p1','p2','p3','p4'][POSTS.length % 4] });
+  usage.posts = (usage.posts || 0) + 1; renderWall(); e.target.reset(); say('Aporte agregado al muro. ¡Gracias!');
+});
+
+/* ---------- TEP ---------- */
+const L = { g:0, y:0, r:0 };
+$$('[data-l]').forEach(b => b.addEventListener('click', () => {
+  L[b.dataset.l]++; const tot = L.g + L.y + L.r;
+  $('#sG').style.width = L.g/tot*100 + '%'; $('#sY').style.width = L.y/tot*100 + '%'; $('#sR').style.width = L.r/tot*100 + '%';
+  $('#lG').textContent = `Tranquilo ${L.g}`; $('#lY').textContent = `A veces ${L.y}`; $('#lR').textContent = `Difícil ${L.r}`;
+  say(b.textContent.trim());
+}));
+const D = { keep:0, change:0 };
+$$('[data-dec]').forEach(b => b.addEventListener('click', () => {
+  D[b.dataset.dec]++;
+  $('#decOut').textContent = `Mantener: ${D.keep} · Cambiar: ${D.change}. ` + (D.keep >= D.change ? 'El grupo decide mantener el acuerdo.' : 'El grupo propone cambiarlo: se revisa en la próxima asamblea.');
+  usage.decision = true;
+}));
+const DAYS = ['Lun','Mar','Mié','Jue','Vie'], uses = [1,0,2,1,0];
+function renderDays(){ $('#days').innerHTML = DAYS.map((d, i) => `<div class="day"><span>${d}</span><b>${uses[i]}</b><button data-d="${i}" aria-label="Sumar uso el ${d}">+1</button></div>`).join(''); }
+$('#days').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if(!b) return; uses[+b.dataset.d]++; renderDays(); $(`[data-d="${b.dataset.d}"]`).focus(); });
+renderDays();
+const SIGN = ['Directora de curso','Docente de apoyo','Docente de educación física','Docente de inglés','Orientación escolar'];
+$('#sign').innerHTML = SIGN.map((s, i) => `<label><input type="checkbox" data-s="${i}"> <span><b>${s}</b><br><span class="note">Aplico los cuatro pasos y las palabras comunes.</span></span></label>`).join('');
+
+function renderBoard(){
+  const signed = $$('#sign input:checked').length;
+  const K = [
+    ['Rutina común', usage.agenda ? 100 : 0, usage.agenda ? 'Agenda en uso' : 'Avanza la agenda en TIC'],
+    ['Libro de calma', Math.round(pages.length / 20 * 100), `${pages.length} de 20 páginas`],
+    ['Pacto del nido', usage.votes ? 100 : 40, usage.votes ? 'Votado por el grupo' : 'Propuesta inicial, faltan votos'],
+    ['Saberes de familias', Math.min(100, POSTS.length * 20), `${POSTS.length} aportes en el muro`],
+    ['Protocolo firmado', Math.round(signed / SIGN.length * 100), `${signed} de ${SIGN.length} firmas`],
+    ['Asamblea', usage.decision ? 100 : 0, usage.decision ? 'Decisión tomada' : 'Vota la decisión de la semana']
+  ];
+  $('#board').innerHTML = K.map(([n, p, s]) => `<div class="kpi"><div class="ring" style="--p:${p}" data-v="${p}%" role="img" aria-label="${n}: ${p} por ciento"></div><div><b>${n}</b><span>${s}</span></div></div>`).join('');
+}
+$('#sign').addEventListener('change', renderBoard);
+
+/* ---------- accesibilidad ---------- */
+const root = document.documentElement, panel = $('#a11y'), aBtn = $('#aBtn');
+aBtn.addEventListener('click', () => { const o = panel.classList.toggle('open'); aBtn.setAttribute('aria-expanded', o); if(o) $('button', panel).focus(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && panel.classList.contains('open')){ panel.classList.remove('open'); aBtn.setAttribute('aria-expanded', false); aBtn.focus(); } });
+let scale = parseFloat(store.get('rn-scale')) || 1;
+const setScale = s => { scale = Math.min(1.6, Math.max(.85, s)); root.style.setProperty('--scale', scale); store.set('rn-scale', scale); };
+$('#fsMinus').onclick = () => setScale(scale - .1); $('#fsPlus').onclick = () => setScale(scale + .1); $('#fsReset').onclick = () => setScale(1); setScale(scale);
+function applyOpt(o, on){
+  if(o === 'dark') root.dataset.theme = on ? 'dark' : 'light';
+  else if(o === 'voice'){ voiceOn = on; if(!on && 'speechSynthesis' in window) speechSynthesis.cancel(); }
+  else root.classList.toggle(o, on);
+  $(`.toggle[data-opt="${o}"]`).setAttribute('aria-checked', on); store.set('rn-' + o, on ? '1' : '0');
+}
+$$('.toggle').forEach(t => {
+  const o = t.dataset.opt, saved = store.get('rn-' + o);
+  if(saved !== null) applyOpt(o, saved === '1');
+  else if(o === 'dark' && matchMedia('(prefers-color-scheme: dark)').matches) t.setAttribute('aria-checked', 'true');
+  t.addEventListener('click', () => applyOpt(o, t.getAttribute('aria-checked') !== 'true'));
+});
+</script>
+</body>
+</html>

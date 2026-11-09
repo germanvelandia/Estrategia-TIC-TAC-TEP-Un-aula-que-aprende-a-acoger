@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda visual · Ruta Nido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+:root{--accent:var(--tic); --accent-soft:var(--tic-soft)}
+.board{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+@media (max-width:640px){ .board{grid-template-columns:1fr} }
+.slot{border-radius:var(--r); padding:22px; text-align:center; min-height:230px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px}
+.slot.now{background:var(--tic-soft); border:4px solid var(--tic)}
+.slot.next{background:var(--surface); border:4px dashed var(--line)}
+.slot .lbl{font:700 1.1rem var(--fh); text-transform:uppercase; letter-spacing:.06em}
+.slot .e{font-size:5.5rem; line-height:1; animation:pop .5s}
+.slot .n{font:700 1.6rem var(--fh)}
+.strip{display:grid; grid-template-columns:repeat(8,1fr); gap:8px; margin-top:18px}
+@media (max-width:760px){ .strip{grid-template-columns:repeat(4,1fr)} }
+.st{border:3px solid var(--line); background:var(--surface); color:var(--ink); border-radius:16px; padding:10px 4px; text-align:center; cursor:pointer; position:relative}
+.st .e{font-size:2.1rem; display:block}
+.st .n{font-size:.82rem; font-weight:700; display:block; line-height:1.2}
+.st.done{opacity:.4}
+.st.done::after{content:"✔"; position:absolute; top:4px; right:8px; color:var(--tep); font-weight:700}
+.st.cur{border-color:var(--sun); box-shadow:0 0 0 5px rgba(242,182,50,.35)}
+.edit-row{display:flex; justify-content:center; gap:4px; margin-top:6px}
+.edit-row button{width:30px; height:30px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--ink); cursor:pointer; font-weight:700}
+.print-sheet{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.print-sheet div{border:2px solid #333; border-radius:12px; text-align:center; padding:14px 4px}
+.print-sheet .e{font-size:3rem; display:block}
+.print-sheet .n{font:700 1rem var(--fh)}
+.home-strip{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:12px}
+.home-strip{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}
+.st, .home-strip div{min-width:0; overflow-wrap:anywhere}
+.home-strip div{border:2px solid var(--line); border-radius:12px; text-align:center; padding:10px 4px; background:var(--surface)}
+.home-strip .e{font-size:2.4rem; display:block}
+@media print{ .print-sheet div{break-inside:avoid} }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="head">
+    <span class="tag">TIC · acceder y comunicar</span>
+    <h1>Agenda visual del día</h1>
+    <p class="lead">Una fila de dibujos que muestra, en orden, lo que va a pasar durante la jornada. Es el recurso más sencillo y el que más seguridad da a un niño de cinco años.</p>
+  </section>
+
+  <div class="explain">
+    <div><b class="q">¿Qué es?</b><p>Una secuencia de pictogramas (dibujos con una palabra) que se proyecta en el tablero y también se pega en la pared: llegada, agenda, juego, trabajo, pausa, lonchera, canción y despedida.</p></div>
+    <div><b class="q">¿Para qué sirve?</b><p>A esta edad los niños no leen. Si ven qué viene después, la incertidumbre baja, entienden sin instrucciones largas y es menos probable que se desorganicen o salgan del salón.</p></div>
+    <div><b class="q">¿Quién la usa y cuándo?</b><p>Todos los adultos que entran al aula, al inicio del día y antes de cada cambio de actividad. La familia usa la versión de la casa por la mañana.</p></div>
+  </div>
+
+  <details class="guide-box">
+    <summary>📋 Cómo usarla en el aula, paso a paso</summary>
+    <ol>
+      <li>Al llegar, proyecte esta página en el tablero o abra la versión impresa en la pared.</li>
+      <li>Recorran juntos la agenda completa: toque cada dibujo para que se escuche su nombre.</li>
+      <li>Antes de cada cambio, pulse «Siguiente»: el tablero muestra <b>Ahora</b> y <b>Después</b>, y lo dice en voz alta.</li>
+      <li>Si el día cambia (una salida, un docente nuevo), use «Organizar» para mover los pasos y avise al grupo.</li>
+      <li>Señale el tablero y diga una palabra clave: «ahora, trabajo en mesa». Es mejor que una instrucción larga.</li>
+    </ol>
+    <p><b>Barrera que atiende:</b> instrucciones largas y ausencia de una rutina común (hallazgos 1 y 2). <b>DUA:</b> 1.2 y 1.3 (imagen y audio), 6.2 (planificar).</p>
+  </details>
+
+  <section class="card no-print" aria-labelledby="t-board">
+    <h2 id="t-board" class="sr">Tablero Ahora y Después</h2>
+    <div class="board">
+      <div class="slot now" aria-live="polite"><span class="lbl" style="color:var(--tic)">Ahora</span><span class="e" id="nowE">🌅</span><span class="n" id="nowN">¡Buenos días!</span></div>
+      <div class="slot next"><span class="lbl" style="color:var(--ink-soft)">Después</span><span class="e" id="nextE">👋</span><span class="n" id="nextN">Llegada y saludo</span></div>
+    </div>
+    <div class="row" style="justify-content:center; margin-top:16px">
+      <button class="btn btn-line" id="prev">← Anterior</button>
+      <button class="btn btn-main btn-big" id="next">Siguiente →</button>
+      <button class="btn btn-line" id="reset">↺ Empezar el día</button>
+    </div>
+    <div class="strip" id="strip"></div>
+    <div class="row" style="justify-content:center; margin-top:14px">
+      <button class="btn btn-line" id="edit" aria-pressed="false">✏️ Organizar la agenda</button>
+      <button class="btn btn-line" onclick="window.print()">🖨️ Imprimir para la pared y la casa</button>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:20px">
+    <h2>Versión para la casa</h2>
+    <p class="no-print">Se envía impresa a la familia para la nevera. Usa los mismos dibujos y las mismas palabras que el colegio.</p>
+    <div class="home-strip">
+      <div><span class="e">⏰</span><b>Despertar</b></div><div><span class="e">👕</span><b>Vestirse</b></div><div><span class="e">🥣</span><b>Desayunar</b></div><div><span class="e">🗓️</span><b>Mirar la agenda</b></div><div><span class="e">🎒</span><b>Al colegio</b></div>
+    </div>
+  </section>
+
+  <section class="print-only" style="margin-top:20px">
+    <h2>Agenda del aula (recortar y pegar en la pared)</h2>
+    <div class="print-sheet" id="printSheet"></div>
+  </section>
+</main>
+<script src="comun.js"></script>
+<script>
+let steps = [['👋','Llegada y saludo'],['🗓️','Mirar la agenda'],['🎲','Juego libre'],['✏️','Trabajo en mesa'],['🧸','Pausa de calma'],['🍎','Lonchera'],['🎵','Canción grupal'],['🎒','Despedida']];
+let i = -1, editing = false;
+function render(){
+  const now = steps[i], nxt = steps[i+1];
+  $('#nowE').textContent = now ? now[0] : '🌅'; $('#nowN').textContent = now ? now[1] : '¡Buenos días!';
+  $('#nextE').textContent = nxt ? nxt[0] : '🏡'; $('#nextN').textContent = nxt ? nxt[1] : 'A casa';
+  $('#nowE').style.animation = 'none'; void $('#nowE').offsetWidth; $('#nowE').style.animation = '';
+  $('#strip').innerHTML = steps.map(([e,n], k) => `<div class="st ${k < i ? 'done' : ''} ${k === i ? 'cur' : ''}"><button class="sr-btn" data-k="${k}" style="all:unset; cursor:pointer; display:block; width:100%" aria-label="Paso ${k+1}: ${n}"><span class="e" aria-hidden="true">${e}</span><span class="n">${n}</span></button>${editing ? `<div class="edit-row"><button data-mv="-1" data-k="${k}" aria-label="Mover ${n} antes">←</button><button data-mv="1" data-k="${k}" aria-label="Mover ${n} después">→</button><button data-del="${k}" aria-label="Quitar ${n} de hoy">✕</button></div>` : ''}</div>`).join('');
+  $('#printSheet').innerHTML = steps.map(([e,n], k) => `<div><span class="e">${e}</span><span class="n">${k+1}. ${n}</span></div>`).join('');
+}
+function announce(){ const now = steps[i], nxt = steps[i+1]; if(now) say(`Ahora, ${now[1]}.` + (nxt ? ` Después, ${nxt[1]}.` : ' Después, a casa.')); }
+$('#next').onclick = () => { if(i < steps.length - 1){ i++; render(); announce(); } else say('¡Terminamos el día! Muy bien.'); };
+$('#prev').onclick = () => { if(i > 0){ i--; render(); announce(); } };
+$('#reset').onclick = () => { i = -1; render(); say('¡Buenos días! Miremos la agenda.'); };
+$('#edit').onclick = e => { editing = !editing; e.currentTarget.setAttribute('aria-pressed', editing); render(); };
+$('#strip').addEventListener('click', e => {
+  const mv = e.target.closest('[data-mv]'), del = e.target.closest('[data-del]'), st = e.target.closest('.sr-btn');
+  if(mv){ const k = +mv.dataset.k, j = k + +mv.dataset.mv; if(j < 0 || j >= steps.length) return; [steps[k], steps[j]] = [steps[j], steps[k]]; render(); return; }
+  if(del){ steps.splice(+del.dataset.del, 1); if(i >= steps.length) i = steps.length - 1; render(); return; }
+  if(st) say(steps[+st.dataset.k][1], true);
+});
+render();
+</script>
+</body>
+</html>

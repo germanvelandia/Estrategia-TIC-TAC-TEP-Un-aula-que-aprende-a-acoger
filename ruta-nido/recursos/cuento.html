@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El globo que se calma · Ruta Nido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+:root{--accent:var(--tac1); --accent-soft:var(--tac1-soft)}
+.book{border-radius:28px; overflow:hidden; box-shadow:var(--shadow); background:var(--surface); border:1px solid var(--line)}
+.scene{min-height:400px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:28px 20px; text-align:center; transition:background .6s}
+.art{font-size:6rem; line-height:1; animation:pop .6s}
+.art.shake{animation:shake .5s 3}
+@keyframes shake{25%{transform:translateX(-10px) rotate(-6deg)}75%{transform:translateX(10px) rotate(6deg)}}
+.balloon{width:200px; height:200px; position:relative; transform:scale(.55); transition:transform 4s ease-in-out}
+.balloon.in{transform:scale(1)}
+.balloon .b{position:absolute; inset:0; border-radius:50% 50% 47% 47%; background:radial-gradient(circle at 34% 28%, rgba(255,255,255,.55), transparent 38%), #e0503a}
+.balloon .f{position:absolute; inset:0; display:grid; place-items:center; font-size:3.4rem}
+.text{font:600 clamp(1.25rem, 3.4vw, 1.7rem) var(--fh); max-width:30ch}
+.ask{font-size:1.05rem; background:var(--tac1-soft); border-radius:14px; padding:10px 16px; max-width:52ch}
+.ctrl{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 18px; border-top:1px solid var(--line); background:var(--bg); flex-wrap:wrap}
+.dots{display:flex; gap:6px}
+.dots i{width:12px; height:12px; border-radius:50%; background:var(--line)}
+.dots i.on{background:var(--tac1); transform:scale(1.3)}
+.faces{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="head">
+    <span class="tag">TAC · aprender y crear</span>
+    <h1>Cuento: «El globo que se calma»</h1>
+    <p class="lead">Un cuento corto, narrado y con imágenes, que se proyecta en el tablero para que todo el grupo aprenda a reconocer el malestar y a calmarse respirando.</p>
+  </section>
+  <div class="explain">
+    <div><b class="q">¿Qué es?</b><p>Siete escenas con narración: un globo se pone nervioso por el ruido, pide una pausa, respira con su profe y vuelve a jugar.</p></div>
+    <div><b class="q">¿Para qué sirve?</b><p>Enseña con una historia, y no con un regaño, lo que el Estudiante A y sus compañeros pueden hacer cuando se sienten desbordados: pedir pausa y respirar.</p></div>
+    <div><b class="q">¿Cuándo se usa?</b><p>En la sesión 1 del momento TAC (30 minutos), antes de crear el libro de calma. Después se repite cuando el grupo lo necesite.</p></div>
+  </div>
+  <details class="guide-box">
+    <summary>📋 Cómo leerlo con el grupo</summary>
+    <ol>
+      <li><b>Antes:</b> sienten a los niños frente al tablero. Pregunte: «¿Alguna vez se han sentido como un globo a punto de explotar?»</li>
+      <li><b>Durante:</b> avance una escena a la vez. En la escena del globo, todos respiran juntos con la animación.</li>
+      <li><b>En las preguntas:</b> deje que respondan señalando una carita, hablando o con un gesto. Todas las respuestas valen.</li>
+      <li><b>Después:</b> pregunte «¿Y tú qué haces cuando te sientes así?» y pase al libro de calma.</li>
+    </ol>
+    <p><b>Barrera que atiende:</b> el estudiante no sabe cómo autorregularse (hallazgo 3). <b>DUA:</b> 9.2 (estrategias para afrontar), 1.2 y 1.3 (audio e imagen).</p>
+  </details>
+
+  <div class="book">
+    <div class="scene" id="scene" aria-live="polite"></div>
+    <div class="ctrl">
+      <button class="btn btn-line" id="back">← Atrás</button>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+      <div class="row"><button class="btn btn-line" id="read">🔊 Leer</button><button class="btn btn-main" id="fwd">Siguiente →</button></div>
+    </div>
+  </div>
+</main>
+<script src="comun.js"></script>
+<script>
+const S = [
+  { art:'🎈', bg:'var(--surface)', t:'Había una vez un globo rojo que vivía en un salón lleno de niños.' },
+  { art:'🎈', bg:'var(--surface)', t:'Al globo le encantaba jugar, cantar y pintar con sus amigos.', ask:'¿Qué te gusta hacer a ti en el salón?' },
+  { art:'😣', bg:'var(--coral-soft)', shake:true, t:'Un día hubo mucho, mucho ruido. El globo se sintió apretado… ¡y quería salir volando!', ask:'¿Cómo se siente el globo? Señala una carita.', faces:true },
+  { art:'✋', bg:'var(--surface)', t:'Su profe le mostró la tarjeta de pausa y le dijo bajito: «¿Pausa?». El globo dijo que sí con la cabeza.' },
+  { art:'🧸', bg:'var(--tac1-soft)', t:'Fueron juntos al rincón de calma, un lugar suave y tranquilo del salón.' },
+  { balloon:true, bg:'var(--tic-soft)', t:'Allí respiraron juntos. Inhala… el globo crece. Exhala… el globo se calma.', ask:'¡Respiremos con el globo tres veces!' },
+  { art:'😊', bg:'var(--tep-soft)', t:'«Volvemos», dijo la profe. El globo regresó a jugar con sus amigos. Ahora sabe pedir una pausa cuando la necesita.', ask:'¿Y tú qué haces cuando te sientes así?' }
+];
+let k = 0, bt;
+function render(){
+  const s = S[k]; clearInterval(bt);
+  const sc = $('#scene'); sc.style.background = s.bg;
+  sc.innerHTML = (s.balloon ? `<div class="balloon" id="bl" aria-hidden="true"><div class="b"></div><div class="f">😌</div></div>` : `<div class="art ${s.shake ? 'shake' : ''}" aria-hidden="true">${s.art}</div>`)
+    + `<p class="text">${s.t}</p>` + (s.ask ? `<p class="ask">💬 ${s.ask}</p>` : '')
+    + (s.faces ? `<div class="faces">${[['😊','Feliz'],['😢','Triste'],['😠','Enojado'],['😨','Asustado']].map(([e,n]) => `<button class="choice" data-face="${n}"><span class="e" aria-hidden="true">${e}</span>${n}</button>`).join('')}</div>` : '');
+  if(s.balloon && !calm()){ let on = false; setTimeout(() => $('#bl').classList.add('in'), 60); on = true; bt = setInterval(() => { on = !on; $('#bl') && $('#bl').classList.toggle('in', on); }, 4000); }
+  $('#dots').innerHTML = S.map((_, n) => `<i class="${n === k ? 'on' : ''}"></i>`).join('');
+  $('#back').disabled = k === 0; $('#fwd').textContent = k === S.length - 1 ? '↺ Otra vez' : 'Siguiente →';
+  say(s.t + (s.ask ? ' ' + s.ask : ''));
+}
+$('#scene').addEventListener('click', e => { const f = e.target.closest('[data-face]'); if(!f) return;
+  $$('[data-face]').forEach(x => x.setAttribute('aria-pressed', x === f));
+  say(f.dataset.face === 'Feliz' ? 'Mmm, mira bien al globo. ¿Está feliz?' : `Sí, el globo se siente ${f.dataset.face.toLowerCase()}. Está bien sentirse así.`, true); });
+$('#fwd').onclick = () => { k = k === S.length - 1 ? 0 : k + 1; render(); };
+$('#back').onclick = () => { if(k > 0){ k--; render(); } };
+$('#read').onclick = () => say(S[k].t + (S[k].ask ? ' ' + S[k].ask : ''), true);
+document.addEventListener('keydown', e => { if(e.key === 'ArrowRight') $('#fwd').click(); if(e.key === 'ArrowLeft') $('#back').click(); });
+render();
+</script>
+</body>
+</html>

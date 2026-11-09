@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rincón de calma · Ruta Nido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+:root{--accent:var(--tac1); --accent-soft:var(--tac1-soft)}
+.flow{display:grid; gap:16px}
+.stage{display:none; text-align:center; padding:26px 18px; border-radius:28px; background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow)}
+.stage.on{display:block; animation:pop .4s}
+.stage h2{font-size:clamp(1.6rem, 4vw, 2.2rem)}
+.choices{justify-content:center}
+.choice{min-width:120px; font-size:1.05rem}
+.choice .e{font-size:3rem}
+.balloon{width:220px; height:220px; margin:10px auto 60px; position:relative; transform:scale(.55); transition:transform 4s ease-in-out}
+.balloon.in{transform:scale(1)}
+.balloon .b{position:absolute; inset:0; border-radius:50% 50% 47% 47%; background:radial-gradient(circle at 34% 28%, rgba(255,255,255,.55), transparent 38%), var(--tic)}
+.balloon::after{content:""; position:absolute; left:50%; bottom:-56px; width:2px; height:56px; background:var(--ink-soft)}
+.big-label{font:700 2rem var(--fh); min-height:1.4em}
+.count{font:700 6rem var(--fh); color:var(--tac1); line-height:1}
+.squeeze{font-size:6rem; display:inline-block; transition:transform .6s}
+.squeeze.in{transform:scale(.7)}
+.timer{width:220px; height:220px; margin:10px auto; border-radius:50%; background:conic-gradient(var(--tep) calc(var(--p, 100) * 1%), var(--bg-2) 0); display:grid; place-items:center}
+.timer span{width:170px; height:170px; border-radius:50%; background:var(--surface); display:grid; place-items:center; font:700 2.6rem var(--fh)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="head">
+    <span class="tag">TAC y TEP · regularse</span>
+    <h1>Rincón de calma digital</h1>
+    <p class="lead">Una pantalla tranquila para la tableta del rincón de calma. Guía al niño en tres pasos: decir cómo se siente, elegir una estrategia y volver cuando esté listo.</p>
+  </section>
+  <div class="explain">
+    <div><b class="q">¿Qué es?</b><p>El complemento digital del rincón físico (cojines, peluche, pelota suave). Tiene caritas, respiración con globo, conteo y un reloj de pausa.</p></div>
+    <div><b class="q">¿Para qué sirve?</b><p>Le da al niño un lugar dentro del aula para calmarse, en lugar de salir del salón. Practica por sí mismo lo que aprendió en el cuento.</p></div>
+    <div><b class="q">¿Cómo se usa bien?</b><p>Siempre como apoyo y nunca como castigo. El adulto acompaña con pocas palabras: «pausa», «respiro», «volvemos».</p></div>
+  </div>
+  <details class="guide-box">
+    <summary>📋 Recomendaciones para el adulto</summary>
+    <ul>
+      <li>Deje la tableta en el rincón, con brillo bajo y volumen suave.</li>
+      <li>Ofrezca la pausa con la tarjeta antes de que el malestar crezca: «¿pausa?».</li>
+      <li>Acompañe sin regañar ni dar explicaciones largas. Cuando el reloj termina, reconecte con un paso pequeño de la actividad.</li>
+      <li>Anote en el registro semanal si el niño pidió la pausa por iniciativa propia. Esa es la evidencia de avance.</li>
+    </ul>
+    <p><b>Barrera que atiende:</b> sobrecarga sensorial y emocional, y salidas del salón (hallazgos 1 y 3). <b>DUA:</b> 7.3 (seguridad), 9.2 (afrontar).</p>
+  </details>
+
+  <div class="flow">
+    <section class="stage on" id="s1" aria-labelledby="q1">
+      <h2 id="q1">¿Cómo me siento?</h2>
+      <div class="choices" id="faces"></div>
+    </section>
+    <section class="stage" id="s2" aria-labelledby="q2">
+      <h2 id="q2">¿Qué quiero hacer?</h2>
+      <div class="choices">
+        <button class="choice" data-go="breath"><span class="e" aria-hidden="true">🎈</span>Respirar con el globo</button>
+        <button class="choice" data-go="count"><span class="e" aria-hidden="true">🖐️</span>Contar hasta 5</button>
+        <button class="choice" data-go="ball"><span class="e" aria-hidden="true">🔴</span>Apretar mi pelota</button>
+        <button class="choice" data-go="timer"><span class="e" aria-hidden="true">⏳</span>Descansar un ratico</button>
+      </div>
+    </section>
+    <section class="stage" id="breath"><h2>Respira con el globo</h2><div class="balloon" id="bal" aria-hidden="true"><div class="b"></div></div><p class="big-label" id="bLbl" aria-live="polite"></p></section>
+    <section class="stage" id="count"><h2>Contemos juntos</h2><p class="count" id="cnt" aria-live="polite">1</p><p class="note">Cuenta con los dedos de tu mano.</p></section>
+    <section class="stage" id="ball"><h2>Aprieta… y suelta</h2><span class="squeeze" id="sq" aria-hidden="true">🔴</span><p class="big-label" id="sqLbl" aria-live="polite"></p></section>
+    <section class="stage" id="timer"><h2>Un ratico de calma</h2><div class="timer" id="tm"><span id="tmTxt">1:00</span></div><div class="row" style="justify-content:center"><button class="btn btn-line" data-min="1">1 minuto</button><button class="btn btn-line" data-min="2">2 minutos</button></div></section>
+    <section class="stage" id="end"><h2>¿Estás listo para volver?</h2><p class="squeeze" aria-hidden="true">😊</p>
+      <div class="row" style="justify-content:center"><button class="btn btn-main btn-big" id="ready">↩️ Volvemos</button><button class="btn btn-line" id="again">Necesito otro ratico</button></div></section>
+  </div>
+</main>
+<script src="comun.js"></script>
+<script>
+const FACES = [['😊','Tranquilo'],['😢','Triste'],['😠','Enojado'],['😨','Asustado'],['😵‍💫','Mucho ruido'],['🥱','Cansado']];
+$('#faces').innerHTML = FACES.map(([e,n]) => `<button class="choice" data-face="${n}"><span class="e" aria-hidden="true">${e}</span>${n}</button>`).join('');
+let timers = [];
+const clearAll = () => { timers.forEach(clearTimeout); timers.forEach(clearInterval); timers = []; };
+function show(id){ clearAll(); $$('.stage').forEach(s => s.classList.toggle('on', s.id === id)); const h = $('#' + id + ' h2'); if(h){ h.tabIndex = -1; h.focus(); } }
+$('#faces').addEventListener('click', e => { const b = e.target.closest('[data-face]'); if(!b) return; const n = b.dataset.face.toLowerCase();
+  say(n === 'tranquilo' ? 'Qué bien que estés tranquilo. ¿Qué quieres hacer?' : `Está bien sentirse ${n}. ¿Qué quieres hacer?`, true); show('s2'); });
+document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if(!g) return; show(g.dataset.go); run[g.dataset.go](); });
+const finish = () => { show('end'); say('¿Estás listo para volver?', true); };
+const T = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
+const run = {
+  breath(){ let n = 0; const step = inhale => { $('#bal').classList.toggle('in', inhale); $('#bLbl').textContent = inhale ? 'Inhala… 🌬️' : 'Exhala… 🍃'; say(inhale ? 'Inhala' : 'Exhala', true);
+      if(!inhale && ++n >= 4){ T(finish, 4000); return; } T(() => step(!inhale), calm() ? 2500 : 4000); }; step(true); },
+  count(){ let n = 1; $('#cnt').textContent = 1; say('Uno', true); const words = ['Uno','Dos','Tres','Cuatro','Cinco'];
+      const t = setInterval(() => { n++; if(n > 5){ clearInterval(t); finish(); return; } $('#cnt').textContent = n; say(words[n-1], true); }, 1500); timers.push(t); },
+  ball(){ let n = 0; const step = sq => { $('#sq').classList.toggle('in', sq); $('#sqLbl').textContent = sq ? 'Aprieta fuerte…' : 'Y suelta…'; say(sq ? 'Aprieta' : 'Suelta', true);
+      if(!sq && ++n >= 4){ T(finish, 2000); return; } T(() => step(!sq), 2200); }; step(true); },
+  timer(){ startTimer(1); }
+};
+function startTimer(min){
+  clearAll(); const total = min * 60; let left = total;
+  const draw = () => { $('#tm').style.setProperty('--p', left / total * 100); $('#tmTxt').textContent = `${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`; };
+  draw(); say(`Descansa ${min === 1 ? 'un minuto' : min + ' minutos'}. Respira tranquilo.`, true);
+  const t = setInterval(() => { left--; draw(); if(left <= 0){ clearInterval(t); finish(); } }, 1000); timers.push(t);
+}
+$$('[data-min]').forEach(b => b.onclick = () => startTimer(+b.dataset.min));
+$('#ready').onclick = () => { say('¡Volvemos! Muy bien.', true); show('s1'); };
+$('#again').onclick = () => show('s2');
+</script>
+</body>
+</html>

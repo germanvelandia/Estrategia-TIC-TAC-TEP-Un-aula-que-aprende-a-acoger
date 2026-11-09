@@ -106,9 +106,10 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus{outline:none}
 /* ===== 1 portada ===== */
 .cover{display:grid; grid-template-columns:1.05fr .95fr; gap:30px; align-items:center}
 @media (max-width:800px){ .cover{grid-template-columns:1fr; text-align:center} .cover .lead{margin:0 auto 1em} }
-.cover h1{font-size:clamp(2.3rem, 6.5vw, 4.4rem); margin-bottom:.25em}
+.cover h1{font-size:clamp(2.1rem, 5vw, 3.5rem); margin-bottom:.25em}
 .cover h1 em{font-style:normal; color:var(--coral)}
-.nest-svg{width:100%; max-width:440px; margin:auto}
+.nest-svg{width:100%; max-width:230px; margin:0 auto; display:block}
+.cover-right .team{margin-top:4px}
 .egg{animation:wiggle 3s ease-in-out infinite; transform-box:fill-box; transform-origin:bottom center}
 .egg.e2{animation-delay:-1s} .egg.e3{animation-delay:-2s}
 @keyframes wiggle{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-8deg)}90%{transform:rotate(8deg)}95%{transform:rotate(-4deg)}}
@@ -117,6 +118,17 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus{outline:none}
 .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:1.2rem}
 @media (max-width:800px){ .chips{justify-content:center} }
 .chip{background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:.35em .9em; font-weight:700; font-size:.88rem}
+
+
+/* equipo en portada */
+.team{margin-top:1.3rem; background:var(--surface); border:1px solid var(--line); border-left:6px solid var(--coral); border-radius:18px; padding:12px 18px; text-align:left}
+@media (max-height:720px) and (min-width:801px){ .nest-svg{max-width:170px} .cover h1{font-size:2.6rem} .cover .chips{display:none} }
+.team-course{margin:0 0 .6em; font-size:.95rem; color:var(--ink-soft)}
+.team-course b{color:var(--ink); font-family:var(--fh); font-size:1.05rem}
+.team-label{margin:0 0 .3em; font-weight:700; text-transform:uppercase; letter-spacing:.07em; font-size:.75rem; color:var(--coral)}
+.team-list{list-style:none; margin:0; padding:0; display:grid; gap:1px; font-weight:700; font-size:.95rem; line-height:1.45}
+.team-list li::before{content:"🪺 "; font-size:.85em}
+@media (max-width:800px){ .team{max-width:480px; margin-left:auto; margin-right:auto} }
 
 /* ===== 2 situación ===== */
 .room-wrap{position:relative; max-width:820px; margin:16px auto 0}
@@ -363,7 +375,7 @@ a.kitc:hover{transform:translateY(-4px)}
         <button class="btn btn-main btn-big" data-go="1">Comenzar el recorrido →</button>
         <div class="chips"><span class="chip">⏱️ 5 minutos</span><span class="chip">🔊 Con voz</span><span class="chip">♿ Accesible</span><span class="chip">👆 Toca y descubre</span></div>
       </div>
-      <svg class="nest-svg" viewBox="0 0 420 380" aria-hidden="true">
+      <div class="cover-right"><svg class="nest-svg" viewBox="0 0 420 380" aria-hidden="true">
         <circle cx="210" cy="190" r="170" fill="var(--tic-soft)"/>
         <path d="M10 300 Q 200 270 410 285" stroke="#7a5230" stroke-width="16" fill="none" stroke-linecap="round"/>
         <path class="leaf" d="M330 284 q 30 -40 70 -30 q -20 40 -70 30z" fill="#4ea65a"/>
@@ -379,6 +391,18 @@ a.kitc:hover{transform:translateY(-4px)}
         <g fill="var(--coral)"><path d="M70 100c0-12 15-17 22-5 7-12 22-7 22 5 0 15-22 26-22 26s-22-11-22-26z" class="egg"/></g>
         <g fill="var(--sun)"><path d="M340 70l6 13 14 2-10 10 3 14-13-7-13 7 3-14-10-10 14-2z" class="egg e2"/></g>
       </svg>
+        <div class="team">
+          <p class="team-course"><b>Recursos Educativos Digitales para la Educación Inclusiva</b><br>Maestría en Educación Inclusiva e Intercultural · Universidad El Bosque · 2026</p>
+          <p class="team-label">Equipo</p>
+          <ul class="team-list">
+            <li>Germán Andrés Velandia Daza</li>
+            <li>Jorge Luis Morales Salamanca</li>
+            <li>Erika Yarith Rodríguez Larrotta</li>
+            <li>Angie Yesenia Patiño Palacios</li>
+            <li>Mónica Julieth Neira Acosta</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -689,7 +713,7 @@ a.kitc:hover{transform:translateY(-4px)}
         <a class="btn btn-line" href="recursos/index.html">🧰 Kit de recursos</a>
         <button class="btn btn-main" data-go="0">↺ Volver a empezar</button>
       </div>
-      <p class="credits">Equipo Tejido Diverso · Recursos digitales para la Educación · Maestría en Educación Inclusiva e Intercultural · Universidad El Bosque · 2026. El estudiante se identifica como «Estudiante A» para proteger su identidad. En el aula se usan pictogramas de <a href="https://arasaac.org/" target="_blank" rel="noopener">ARASAAC</a> (Gobierno de Aragón, CC BY-NC-SA); aquí se representan con emojis. Esta página no guarda ni envía datos.</p>
+      <p class="credits">Germán Andrés Velandia Daza, Jorge Luis Morales Salamanca, Erika Yarith Rodríguez Larrotta, Angie Yesenia Patiño Palacios y Mónica Julieth Neira Acosta · Recursos Educativos Digitales para la Educación Inclusiva · Maestría en Educación Inclusiva e Intercultural · Universidad El Bosque · 2026. El estudiante se identifica como «Estudiante A» para proteger su identidad. En el aula se usan pictogramas de <a href="https://arasaac.org/" target="_blank" rel="noopener">ARASAAC</a> (Gobierno de Aragón, CC BY-NC-SA); aquí se representan con emojis. Esta página no guarda ni envía datos.</p>
     </div>
   </section>
   </main>
